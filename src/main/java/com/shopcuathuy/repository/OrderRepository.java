@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 
 /**
@@ -42,6 +46,11 @@ public interface OrderRepository extends JpaRepository<Order, String> {
      * Find orders by seller with pagination
      */
     Page<Order> findBySellerId(String sellerId, Pageable pageable);
+
+    /**
+     * Find orders by user ID and created date range
+     */
+    List<Order> findByUserIdAndCreatedAtBetween(String userId, LocalDateTime startDate, LocalDateTime endDate);
 
     /**
      * Find orders by user and seller

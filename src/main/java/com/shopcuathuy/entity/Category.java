@@ -1,5 +1,6 @@
 package com.shopcuathuy.entity;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -7,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * Category entity representing product categories
@@ -67,6 +72,19 @@ public class Category {
     @Column(nullable = false)
     @Builder.Default
     private Boolean active = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private CategoryStatus status = CategoryStatus.ACTIVE;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean featured = false;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer level = 1;
 
     @Column(name = "meta_title", length = 255)
     @Size(max = 255, message = "Meta title must not exceed 255 characters")
@@ -152,5 +170,15 @@ public class Category {
             return name;
         }
         return parent != null ? parent.getFullPath() + " > " + name : name;
+    }
+
+    /**
+     * Category status enum
+     */
+    public enum CategoryStatus {
+        ACTIVE,
+        INACTIVE,
+        PENDING,
+        SUSPENDED
     }
 }

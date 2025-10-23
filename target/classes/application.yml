@@ -7,9 +7,9 @@ spring:
   
   # Database Configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/shopcuathuy?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:shopcuathuy}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:password}
+    password: ${DB_PASSWORD:123456}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 20
@@ -171,6 +171,11 @@ app:
     allowed-types: ${FILE_ALLOWED_TYPES:jpg,jpeg,png,gif,webp,pdf,doc,docx}
   
   payment:
+    vnpay:
+      tmn-code: ${VNPAY_TMN_CODE:}
+      hash-secret: ${VNPAY_HASH_SECRET:}
+      url: ${VNPAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+      return-url: ${VNPAY_RETURN_URL:http://localhost:3000/payment/return}
     stripe:
       secret-key: ${STRIPE_SECRET_KEY:}
       publishable-key: ${STRIPE_PUBLISHABLE_KEY:}
@@ -179,6 +184,18 @@ app:
       client-id: ${PAYPAL_CLIENT_ID:}
       client-secret: ${PAYPAL_CLIENT_SECRET:}
       mode: ${PAYPAL_MODE:sandbox}
+  
+      minio:
+        endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+        access-key: ${MINIO_ACCESS_KEY:minioadmin}
+        secret-key: ${MINIO_SECRET_KEY:minioadmin}
+        bucket-name: ${MINIO_BUCKET:shopcuathuy}
+        secure: ${MINIO_SECURE:false}
+      
+      jwt:
+        secret: ${JWT_SECRET:mySecretKey}
+        expiration: ${JWT_EXPIRATION:86400000}
+        refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
   
   elasticsearch:
     host: ${ELASTICSEARCH_HOST:localhost}

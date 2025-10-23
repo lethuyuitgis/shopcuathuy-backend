@@ -1,4 +1,6 @@
 package com.shopcuathuy.service;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 import com.shopcuathuy.config.MinIOConfig;
 import io.minio.BucketExistsArgs;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -257,6 +260,507 @@ public class FileStorageService {
     public String getThumbnailUrl(String objectName) {
         String thumbnailObjectName = objectName.replace("/", "/thumbnails/");
         return getFileUrl(thumbnailObjectName);
+    }
+
+    /**
+     * Upload analytics data to MinIO
+     */
+    public String uploadAnalyticsData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "analytics/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload analytics data: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Upload analytics export to MinIO
+     */
+    public String uploadAnalyticsExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "analytics/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload analytics export: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Upload shipping data to MinIO
+     */
+    public String uploadShippingData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "shipping/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload shipping data: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Upload shipping export to MinIO
+     */
+    public String uploadShippingExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "shipping/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload shipping export: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Upload coupon data to MinIO
+     */
+    public String uploadCouponData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "coupons/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload coupon data: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Upload coupon export to MinIO
+     */
+    public String uploadCouponExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "coupons/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload coupon export: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Upload seller data to MinIO
+     */
+    public String uploadSellerData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "sellers/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload seller data: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Upload seller export to MinIO
+     */
+    public String uploadSellerExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "sellers/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload seller export: " + e.getMessage(), e);
+        }
+    }
+
+    // Notification related methods
+    public String uploadNotificationData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "notifications/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload notification data: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadNotificationExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "notifications/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload notification export: " + e.getMessage(), e);
+        }
+    }
+
+    // Wishlist related methods
+    public String uploadWishlistData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "wishlists/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload wishlist data: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadWishlistExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "wishlists/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload wishlist export: " + e.getMessage(), e);
+        }
+    }
+
+    // Review related methods
+    public String uploadReviewData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "reviews/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload review data: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadReviewExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "reviews/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload review export: " + e.getMessage(), e);
+        }
+    }
+
+    // Cart related methods
+    public String uploadCartData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "carts/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload cart data: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadCartExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "carts/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload cart export: " + e.getMessage(), e);
+        }
+    }
+
+    // Payment related methods
+    public String uploadPaymentData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "payments/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload payment data: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadPaymentExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "payments/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload payment export: " + e.getMessage(), e);
+        }
+    }
+
+    // Order related methods
+    public String uploadOrderData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "orders/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload order data: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadOrderExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "orders/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload order export: " + e.getMessage(), e);
+        }
+    }
+
+    // Product related methods
+    public String uploadProductData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "products/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload product data: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadProductExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "products/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload product export: " + e.getMessage(), e);
+        }
+    }
+
+    // User related methods
+    public String uploadUserData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "users/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload user data: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadUserExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "users/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload user export: " + e.getMessage(), e);
+        }
+    }
+
+    // Category related methods
+    public String uploadCategoryData(String fileName, String data) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "categories/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(data.getBytes()), data.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return objectName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload category data: " + e.getMessage(), e);
+        }
+    }
+
+    public String uploadCategoryExport(String fileName, String exportData) {
+        try {
+            String bucketName = minIOConfig.getBucketName();
+            String objectName = "categories/exports/" + getCurrentDatePath() + "/" + fileName;
+
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(new ByteArrayInputStream(exportData.getBytes()), exportData.getBytes().length, -1)
+                    .contentType("application/json")
+                    .build());
+
+            return getFileUrl(objectName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload category export: " + e.getMessage(), e);
+        }
     }
 
     /**

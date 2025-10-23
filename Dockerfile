@@ -1,5 +1,5 @@
 # Multi-stage build for production optimization
-FROM eclipse-temurin:17-jdk-alpine AS builder
+FROM eclipse-temurin:17-jdk AS builder
 
 # Set working directory
 WORKDIR /app
@@ -22,20 +22,21 @@ COPY src src
 RUN ./mvnw clean package -DskipTests
 
 # Production stage
-FROM eclipse-temurin:17-jre-alpine AS runtime
+FROM eclipse-temurin:17-jre AS runtime
 
 # Install necessary packages
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     curl \
-    tzdata
+    tzdata \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set timezone
 ENV TZ=Asia/Ho_Chi_Minh
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Create non-root user
-RUN addgroup -g 1001 -S spring && \
-    adduser -u 1001 -S spring -G spring
+RUN groupadd -g 1001 spring && \
+    useradd -u 1001 -g spring spring
 
 # Set working directory
 WORKDIR /app

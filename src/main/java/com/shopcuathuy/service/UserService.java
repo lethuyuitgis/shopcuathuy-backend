@@ -1,9 +1,13 @@
 package com.shopcuathuy.service;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 import com.shopcuathuy.dto.CreateUserDTO;
 import com.shopcuathuy.dto.UpdateUserDTO;
 import com.shopcuathuy.dto.UserDTO;
 import com.shopcuathuy.entity.User;
+import com.shopcuathuy.exception.DuplicateResourceException;
+import com.shopcuathuy.exception.ResourceNotFoundException;
 import com.shopcuathuy.mapper.UserMapper;
 import com.shopcuathuy.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -12,8 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -34,6 +39,12 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MessageProducerService messageProducerService;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     /**
      * Create a new user
@@ -58,6 +69,13 @@ public class UserService {
 
         // Save user
         User savedUser = userRepository.save(user);
+
+        // Send user registered message to RabbitMQ
+        messageProducerService.sendUserRegisteredMessage(userMapper.toDTO(savedUser));
+
+        // Store user data to MinIO
+        storeUserToMinIO(savedUser);
+
         return userMapper.toDTO(savedUser);
     }
 
@@ -187,7 +205,7 @@ public class UserService {
         }
 
         // Check if phone already exists (excluding current user)
-        if (StringUtils.hasText(updateUserDTO.getPhone()) && 
+        if (StringUtils.hasText(updateUserDTO.getPhone()) &&
             !user.getPhone().equals(updateUserDTO.getPhone()) &&
             userRepository.existsByPhoneAndIdNot(updateUserDTO.getPhone(), id)) {
             throw new DuplicateResourceException("Phone already exists: " + updateUserDTO.getPhone());
@@ -566,5 +584,98 @@ public class UserService {
     public Page<UserDTO> getUsersByPhoneEndingWith(String phone, Pageable pageable) {
         Page<User> users = userRepository.findByPhoneEndingWith(phone, pageable);
         return users.map(userMapper::toDTO);
+    }
+
+    /**
+     * Export user data
+     */
+    public String exportUserData(LocalDateTime startDate, LocalDateTime endDate, String format) {
+        List<User> users = userRepository.findByCreatedAtBetween(startDate, endDate);
+        
+        // Generate export data
+        String exportData = generateUserExportData(users, format);
+        
+        // Store to MinIO
+        String fileName = "user-export-" + System.currentTimeMillis() + "." + format;
+        String fileUrl = fileStorageService.uploadUserExport(fileName, exportData);
+        
+        return fileUrl;
+    }
+
+    /**
+     * Store user data to MinIO
+     */
+    private void storeUserToMinIO(User user) {
+        try {
+            String userData = createUserDataJson(user);
+            String fileName = "users/" + user.getStatus() + "/" +
+                            user.getCreatedAt().toLocalDate() + "/" +
+                            user.getId() + ".json";
+            
+            fileStorageService.uploadUserData(fileName, userData);
+        } catch (Exception e) {
+            System.err.println("Failed to store user data to MinIO: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Create user data JSON
+     */
+    private String createUserDataJson(User user) {
+        return String.format(
+            "{\"id\":%d,\"email\":\"%s\",\"fullName\":\"%s\",\"role\":\"%s\",\"status\":\"%s\",\"createdAt\":\"%s\"}",
+            user.getId(),
+            user.getEmail(),
+            user.getName(),
+            user.getRole(),
+            user.getStatus(),
+            user.getCreatedAt()
+        );
+    }
+
+    /**
+     * Generate user export data
+     */
+    private String generateUserExportData(List<User> users, String format) {
+        if ("json".equalsIgnoreCase(format)) {
+            return generateUserJsonExport(users);
+        } else if ("csv".equalsIgnoreCase(format)) {
+            return generateUserCsvExport(users);
+        }
+        return generateUserJsonExport(users);
+    }
+
+    /**
+     * Generate JSON export
+     */
+    private String generateUserJsonExport(List<User> users) {
+        StringBuilder json = new StringBuilder("[");
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            json.append(createUserDataJson(user));
+            if (i < users.size() - 1) {
+                json.append(",");
+            }
+        }
+        json.append("]");
+        return json.toString();
+    }
+
+    /**
+     * Generate CSV export
+     */
+    private String generateUserCsvExport(List<User> users) {
+        StringBuilder csv = new StringBuilder("id,email,fullName,role,status,createdAt\n");
+        for (User user : users) {
+            csv.append(String.format("%d,%s,%s,%s,%s,%s\n",
+                user.getId(),
+                user.getEmail(),
+                user.getName(),
+                user.getRole(),
+                user.getStatus(),
+                user.getCreatedAt()
+            ));
+        }
+        return csv.toString();
     }
 }

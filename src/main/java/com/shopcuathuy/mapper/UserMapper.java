@@ -5,8 +5,11 @@ import com.shopcuathuy.dto.UpdateUserDTO;
 import com.shopcuathuy.dto.UserDTO;
 import com.shopcuathuy.entity.User;
 import java.util.List;
+
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 
@@ -16,7 +19,7 @@ import org.mapstruct.factory.Mappers;
  * @author ShopCuaThuy Team
  * @version 1.0.0
  */
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
@@ -24,7 +27,6 @@ public interface UserMapper {
     /**
      * Convert User entity to UserDTO
      */
-    @Mapping(target = "passwordHash", ignore = true)
     UserDTO toDTO(User user);
 
     /**

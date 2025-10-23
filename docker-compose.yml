@@ -11,13 +11,16 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=docker
       - DB_HOST=mysql
       - DB_USERNAME=root
-      - DB_PASSWORD=password
+      - DB_PASSWORD=123456
       - REDIS_HOST=redis
       - RABBITMQ_HOST=rabbitmq
       - ELASTICSEARCH_HOST=elasticsearch
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
     env_file:
       - .env
     depends_on:
@@ -49,10 +52,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: shopcuathuy
       MYSQL_USER: shopcuathuy
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: 123456
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database/init:/docker-entrypoint-initdb.d
@@ -61,7 +64,7 @@ services:
     networks:
       - shopcuathuy-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -74,13 +77,13 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
-    command: redis-server --appendonly yes --requirepass redis_password
+    command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
     networks:
       - shopcuathuy-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -222,7 +225,7 @@ services:
       - "9001:9001"
     environment:
       MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin123
+      MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"

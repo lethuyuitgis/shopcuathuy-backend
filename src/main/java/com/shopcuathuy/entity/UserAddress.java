@@ -1,4 +1,10 @@
 package com.shopcuathuy.entity;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +12,10 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
+import lombok.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * UserAddress entity representing user addresses
