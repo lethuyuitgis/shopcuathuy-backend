@@ -1,6 +1,7 @@
 package com.shopcuathuy.mapper;
 
 import com.shopcuathuy.dto.AnalyticsEventDTO;
+import com.shopcuathuy.dto.CreateAnalyticsEventDTO;
 import com.shopcuathuy.entity.AnalyticsEvent;
 import com.shopcuathuy.entity.Order;
 import com.shopcuathuy.entity.Product;
@@ -12,64 +13,144 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-10-23T17:09:28+0700",
+    date = "2025-10-23T18:12:40+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)"
 )
 @Component
 public class AnalyticsEventMapperImpl implements AnalyticsEventMapper {
 
     @Override
-    public AnalyticsEventDTO toDTO(AnalyticsEvent event) {
-        if ( event == null ) {
+    public AnalyticsEventDTO toDTO(AnalyticsEvent analyticsEvent) {
+        if ( analyticsEvent == null ) {
             return null;
         }
 
-        AnalyticsEventDTO analyticsEventDTO = new AnalyticsEventDTO();
+        AnalyticsEventDTO.AnalyticsEventDTOBuilder analyticsEventDTO = AnalyticsEventDTO.builder();
 
-        String id = eventUserId( event );
+        String id = analyticsEventUserId( analyticsEvent );
         if ( id != null ) {
-            analyticsEventDTO.setUserId( Long.parseLong( id ) );
+            analyticsEventDTO.userId( Long.parseLong( id ) );
         }
-        analyticsEventDTO.setUserName( eventUserName( event ) );
-        String id1 = eventProductId( event );
+        String id1 = analyticsEventProductId( analyticsEvent );
         if ( id1 != null ) {
-            analyticsEventDTO.setProductId( Long.parseLong( id1 ) );
+            analyticsEventDTO.productId( Long.parseLong( id1 ) );
         }
-        analyticsEventDTO.setProductName( eventProductName( event ) );
-        String id2 = eventOrderId( event );
+        String id2 = analyticsEventOrderId( analyticsEvent );
         if ( id2 != null ) {
-            analyticsEventDTO.setOrderId( Long.parseLong( id2 ) );
+            analyticsEventDTO.orderId( Long.parseLong( id2 ) );
         }
-        analyticsEventDTO.setId( event.getId() );
-        analyticsEventDTO.setEventName( event.getEventName() );
-        analyticsEventDTO.setEventType( event.getEventType() );
-        analyticsEventDTO.setEventData( event.getEventData() );
-        analyticsEventDTO.setSessionId( event.getSessionId() );
-        analyticsEventDTO.setIpAddress( event.getIpAddress() );
-        analyticsEventDTO.setUserAgent( event.getUserAgent() );
-        analyticsEventDTO.setReferrer( event.getReferrer() );
-        analyticsEventDTO.setValue( event.getValue() );
-        analyticsEventDTO.setProperties( event.getProperties() );
-        analyticsEventDTO.setCreatedAt( event.getCreatedAt() );
+        analyticsEventDTO.id( analyticsEvent.getId() );
+        analyticsEventDTO.eventName( analyticsEvent.getEventName() );
+        analyticsEventDTO.eventType( analyticsEvent.getEventType() );
+        analyticsEventDTO.eventData( analyticsEvent.getEventData() );
+        analyticsEventDTO.sessionId( analyticsEvent.getSessionId() );
+        analyticsEventDTO.ipAddress( analyticsEvent.getIpAddress() );
+        analyticsEventDTO.userAgent( analyticsEvent.getUserAgent() );
+        analyticsEventDTO.referrer( analyticsEvent.getReferrer() );
+        analyticsEventDTO.value( analyticsEvent.getValue() );
+        analyticsEventDTO.createdAt( analyticsEvent.getCreatedAt() );
 
-        return analyticsEventDTO;
+        analyticsEventDTO.properties( analyticsEvent.getProperties() != null ? analyticsEvent.getProperties().toString() : null );
+
+        return analyticsEventDTO.build();
     }
 
     @Override
-    public List<AnalyticsEventDTO> toDTOList(List<AnalyticsEvent> events) {
-        if ( events == null ) {
+    public AnalyticsEvent toEntity(AnalyticsEventDTO analyticsEventDTO) {
+        if ( analyticsEventDTO == null ) {
             return null;
         }
 
-        List<AnalyticsEventDTO> list = new ArrayList<AnalyticsEventDTO>( events.size() );
-        for ( AnalyticsEvent analyticsEvent : events ) {
+        AnalyticsEvent.AnalyticsEventBuilder analyticsEvent = AnalyticsEvent.builder();
+
+        analyticsEvent.id( analyticsEventDTO.getId() );
+        analyticsEvent.eventName( analyticsEventDTO.getEventName() );
+        analyticsEvent.eventType( analyticsEventDTO.getEventType() );
+        analyticsEvent.eventData( analyticsEventDTO.getEventData() );
+        analyticsEvent.sessionId( analyticsEventDTO.getSessionId() );
+        analyticsEvent.ipAddress( analyticsEventDTO.getIpAddress() );
+        analyticsEvent.userAgent( analyticsEventDTO.getUserAgent() );
+        analyticsEvent.referrer( analyticsEventDTO.getReferrer() );
+        analyticsEvent.value( analyticsEventDTO.getValue() );
+        analyticsEvent.properties( analyticsEventDTO.getProperties() );
+        analyticsEvent.createdAt( analyticsEventDTO.getCreatedAt() );
+
+        return analyticsEvent.build();
+    }
+
+    @Override
+    public AnalyticsEvent toEntity(CreateAnalyticsEventDTO createAnalyticsEventDTO) {
+        if ( createAnalyticsEventDTO == null ) {
+            return null;
+        }
+
+        AnalyticsEvent.AnalyticsEventBuilder analyticsEvent = AnalyticsEvent.builder();
+
+        analyticsEvent.eventName( createAnalyticsEventDTO.getEventName() );
+        analyticsEvent.eventType( createAnalyticsEventDTO.getEventType() );
+        analyticsEvent.eventData( createAnalyticsEventDTO.getEventData() );
+        analyticsEvent.sessionId( createAnalyticsEventDTO.getSessionId() );
+        analyticsEvent.ipAddress( createAnalyticsEventDTO.getIpAddress() );
+        analyticsEvent.userAgent( createAnalyticsEventDTO.getUserAgent() );
+        analyticsEvent.referrer( createAnalyticsEventDTO.getReferrer() );
+        analyticsEvent.value( createAnalyticsEventDTO.getValue() );
+
+        return analyticsEvent.build();
+    }
+
+    @Override
+    public void updateEntity(AnalyticsEventDTO analyticsEventDTO, AnalyticsEvent analyticsEvent) {
+        if ( analyticsEventDTO == null ) {
+            return;
+        }
+
+        if ( analyticsEventDTO.getId() != null ) {
+            analyticsEvent.setId( analyticsEventDTO.getId() );
+        }
+        if ( analyticsEventDTO.getEventName() != null ) {
+            analyticsEvent.setEventName( analyticsEventDTO.getEventName() );
+        }
+        if ( analyticsEventDTO.getEventType() != null ) {
+            analyticsEvent.setEventType( analyticsEventDTO.getEventType() );
+        }
+        if ( analyticsEventDTO.getEventData() != null ) {
+            analyticsEvent.setEventData( analyticsEventDTO.getEventData() );
+        }
+        if ( analyticsEventDTO.getSessionId() != null ) {
+            analyticsEvent.setSessionId( analyticsEventDTO.getSessionId() );
+        }
+        if ( analyticsEventDTO.getIpAddress() != null ) {
+            analyticsEvent.setIpAddress( analyticsEventDTO.getIpAddress() );
+        }
+        if ( analyticsEventDTO.getUserAgent() != null ) {
+            analyticsEvent.setUserAgent( analyticsEventDTO.getUserAgent() );
+        }
+        if ( analyticsEventDTO.getReferrer() != null ) {
+            analyticsEvent.setReferrer( analyticsEventDTO.getReferrer() );
+        }
+        if ( analyticsEventDTO.getValue() != null ) {
+            analyticsEvent.setValue( analyticsEventDTO.getValue() );
+        }
+        if ( analyticsEventDTO.getCreatedAt() != null ) {
+            analyticsEvent.setCreatedAt( analyticsEventDTO.getCreatedAt() );
+        }
+    }
+
+    @Override
+    public List<AnalyticsEventDTO> toDTOList(List<AnalyticsEvent> analyticsEvents) {
+        if ( analyticsEvents == null ) {
+            return null;
+        }
+
+        List<AnalyticsEventDTO> list = new ArrayList<AnalyticsEventDTO>( analyticsEvents.size() );
+        for ( AnalyticsEvent analyticsEvent : analyticsEvents ) {
             list.add( toDTO( analyticsEvent ) );
         }
 
         return list;
     }
 
-    private String eventUserId(AnalyticsEvent analyticsEvent) {
+    private String analyticsEventUserId(AnalyticsEvent analyticsEvent) {
         if ( analyticsEvent == null ) {
             return null;
         }
@@ -84,22 +165,7 @@ public class AnalyticsEventMapperImpl implements AnalyticsEventMapper {
         return id;
     }
 
-    private String eventUserName(AnalyticsEvent analyticsEvent) {
-        if ( analyticsEvent == null ) {
-            return null;
-        }
-        User user = analyticsEvent.getUser();
-        if ( user == null ) {
-            return null;
-        }
-        String name = user.getName();
-        if ( name == null ) {
-            return null;
-        }
-        return name;
-    }
-
-    private String eventProductId(AnalyticsEvent analyticsEvent) {
+    private String analyticsEventProductId(AnalyticsEvent analyticsEvent) {
         if ( analyticsEvent == null ) {
             return null;
         }
@@ -114,22 +180,7 @@ public class AnalyticsEventMapperImpl implements AnalyticsEventMapper {
         return id;
     }
 
-    private String eventProductName(AnalyticsEvent analyticsEvent) {
-        if ( analyticsEvent == null ) {
-            return null;
-        }
-        Product product = analyticsEvent.getProduct();
-        if ( product == null ) {
-            return null;
-        }
-        String name = product.getName();
-        if ( name == null ) {
-            return null;
-        }
-        return name;
-    }
-
-    private String eventOrderId(AnalyticsEvent analyticsEvent) {
+    private String analyticsEventOrderId(AnalyticsEvent analyticsEvent) {
         if ( analyticsEvent == null ) {
             return null;
         }

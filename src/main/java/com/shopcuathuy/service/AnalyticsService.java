@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
  * @version 1.0.0
  */
 @Service
+@RequiredArgsConstructor
 public class AnalyticsService {
 
     private final AnalyticsEventRepository analyticsEventRepository;
@@ -37,18 +38,7 @@ public class AnalyticsService {
     private final MessageProducerService messageProducerService;
     private final FileStorageService fileStorageService;
 
-    public AnalyticsService(AnalyticsEventRepository analyticsEventRepository, UserRepository userRepository,
-                           ProductRepository productRepository, OrderRepository orderRepository,
-                           AnalyticsEventMapper analyticsEventMapper, MessageProducerService messageProducerService,
-                           FileStorageService fileStorageService) {
-        this.analyticsEventRepository = analyticsEventRepository;
-        this.userRepository = userRepository;
-        this.productRepository = productRepository;
-        this.orderRepository = orderRepository;
-        this.analyticsEventMapper = analyticsEventMapper;
-        this.messageProducerService = messageProducerService;
-        this.fileStorageService = fileStorageService;
-    }
+
 
     /**
      * Track analytics event
@@ -87,7 +77,7 @@ public class AnalyticsService {
         event.setUserAgent(createEventDTO.getUserAgent());
         event.setReferrer(createEventDTO.getReferrer());
         event.setValue(createEventDTO.getValue());
-        event.setProperties(createEventDTO.getProperties());
+        event.setProperties(String.valueOf(createEventDTO.getProperties()));
 
         event = analyticsEventRepository.save(event);
 
@@ -103,16 +93,16 @@ public class AnalyticsService {
     /**
      * Get analytics events by user
      */
-    public List<AnalyticsEventDTO> getUserEvents(Long userId) {
-        List<AnalyticsEvent> events = analyticsEventRepository.findByUserIdOrderByCreatedAtDesc(userId);
+    public List<AnalyticsEventDTO> getUserEvents(String userId) {
+        List<AnalyticsEvent> events = analyticsEventRepository.findByUser_IdOrderByCreatedAtDesc(userId);
         return analyticsEventMapper.toDTOList(events);
     }
 
     /**
      * Get analytics events by user with pagination
      */
-    public Page<AnalyticsEventDTO> getUserEvents(Long userId, Pageable pageable) {
-        Page<AnalyticsEvent> events = analyticsEventRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
+    public Page<AnalyticsEventDTO> getUserEvents(String userId, Pageable pageable) {
+        Page<AnalyticsEvent> events = analyticsEventRepository.findByUser_IdOrderByCreatedAtDesc(userId, pageable);
         return events.map(analyticsEventMapper::toDTO);
     }
 
@@ -127,8 +117,8 @@ public class AnalyticsService {
     /**
      * Get analytics events by product
      */
-    public List<AnalyticsEventDTO> getProductEvents(Long productId) {
-        List<AnalyticsEvent> events = analyticsEventRepository.findByProductIdOrderByCreatedAtDesc(productId);
+    public List<AnalyticsEventDTO> getProductEvents(String productId) {
+        List<AnalyticsEvent> events = analyticsEventRepository.findByProduct_IdOrderByCreatedAtDesc(productId);
         return analyticsEventMapper.toDTOList(events);
     }
 
@@ -339,7 +329,7 @@ public class AnalyticsService {
                 .userId(userId)
                 .orderId(orderId)
                 .eventType("ORDER_CREATED")
-                .eventData(Map.of("status", status).toString())
+                .eventData("status=" + status)
                 .build();
         trackEvent(eventDTO);
     }
@@ -351,7 +341,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .orderId(orderId)
                 .eventType("ORDER_STATUS_UPDATE")
-                .eventData(Map.of("status", status).toString())
+                .eventData("status=" + status)
                 .build();
         trackEvent(eventDTO);
     }
@@ -364,7 +354,7 @@ public class AnalyticsService {
                 .userId(userId)
                 .orderId(orderId)
                 .eventType("ORDER_CANCELLED")
-                .eventData(Map.of("reason", reason).toString())
+                .eventData("reason=" + reason)
                 .build();
         trackEvent(eventDTO);
     }
@@ -376,7 +366,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .orderId(orderId)
                 .eventType("ORDER_SHIPPED")
-                .eventData(Map.of("trackingNumber", trackingNumber).toString())
+                .eventData("trackingNumber=" + trackingNumber)
                 .build();
         trackEvent(eventDTO);
     }
@@ -388,7 +378,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .orderId(orderId)
                 .eventType("ORDER_DELIVERED")
-                .eventData(Map.of("deliveryDate", deliveryDate).toString())
+                .eventData("deliveryDate=" + deliveryDate)
                 .build();
         trackEvent(eventDTO);
     }
@@ -400,7 +390,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .productId(productId)
                 .eventType("PRODUCT_CREATED")
-                .eventData(Map.of("sellerId", sellerId).toString())
+                .eventData("sellerId=" + sellerId)
                 .build();
         trackEvent(eventDTO);
     }
@@ -412,7 +402,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .productId(productId)
                 .eventType("PRODUCT_UPDATED")
-                .eventData(Map.of("changes", changes).toString())
+                .eventData("changes=" + changes)
                 .build();
         trackEvent(eventDTO);
     }
@@ -424,7 +414,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .productId(productId)
                 .eventType("PRODUCT_DELETED")
-                .eventData(Map.of("reason", reason).toString())
+                .eventData("reason=" + reason)
                 .build();
         trackEvent(eventDTO);
     }
@@ -436,7 +426,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .productId(productId)
                 .eventType("LOW_STOCK")
-                .eventData(Map.of("sellerId", sellerId, "stockLevel", stockLevel).toString())
+                .eventData("sellerId=" + sellerId + ",stockLevel=" + stockLevel)
                 .build();
         trackEvent(eventDTO);
     }
@@ -448,7 +438,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .userId(userId)
                 .eventType("USER_REGISTERED")
-                .eventData(Map.of("email", email).toString())
+                .eventData("email=" + email)
                 .build();
         trackEvent(eventDTO);
     }
@@ -460,7 +450,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .userId(userId)
                 .eventType("USER_UPDATED")
-                .eventData(Map.of("changes", changes).toString())
+                .eventData("changes=" + changes)
                 .build();
         trackEvent(eventDTO);
     }
@@ -472,7 +462,7 @@ public class AnalyticsService {
         CreateAnalyticsEventDTO eventDTO = CreateAnalyticsEventDTO.builder()
                 .userId(userId)
                 .eventType("USER_DEACTIVATED")
-                .eventData(Map.of("reason", reason).toString())
+                .eventData("reason=" + reason)
                 .build();
         trackEvent(eventDTO);
     }

@@ -19,15 +19,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    @Value("${spring.rabbitmq.queue.name}")
-    private String queueName;
-
-    @Value("${spring.rabbitmq.exchange.name}")
-    private String exchangeName;
-
-    @Value("${spring.rabbitmq.routing.key}")
-    private String routingKey;
-
     // Queue names
     public static final String ORDER_QUEUE = "order.queue";
     public static final String PRODUCT_QUEUE = "product.queue";
@@ -322,6 +313,120 @@ public class RabbitMQConfig {
                 .bind(shippingQueue())
                 .to(shippingExchange())
                 .with("shipping.*");
+    }
+
+    // Coupon Queue Configuration
+    @Bean
+    public Queue couponQueue() {
+        return QueueBuilder.durable("coupon.queue").build();
+    }
+
+    @Bean
+    public TopicExchange couponExchange() {
+        return new TopicExchange(COUPON_EXCHANGE);
+    }
+
+    @Bean
+    public Binding couponBinding() {
+        return BindingBuilder
+                .bind(couponQueue())
+                .to(couponExchange())
+                .with("coupon.*");
+    }
+
+    // Seller Queue Configuration
+    @Bean
+    public Queue sellerQueue() {
+        return QueueBuilder.durable("seller.queue").build();
+    }
+
+    @Bean
+    public TopicExchange sellerExchange() {
+        return new TopicExchange(SELLER_EXCHANGE);
+    }
+
+    @Bean
+    public Binding sellerBinding() {
+        return BindingBuilder
+                .bind(sellerQueue())
+                .to(sellerExchange())
+                .with("seller.*");
+    }
+
+    // Category Queue Configuration
+    @Bean
+    public Queue categoryQueue() {
+        return QueueBuilder.durable("category.queue").build();
+    }
+
+    @Bean
+    public TopicExchange categoryExchange() {
+        return new TopicExchange(CATEGORY_EXCHANGE);
+    }
+
+    @Bean
+    public Binding categoryBinding() {
+        return BindingBuilder
+                .bind(categoryQueue())
+                .to(categoryExchange())
+                .with("category.*");
+    }
+
+    // Wishlist Queue Configuration
+    @Bean
+    public Queue wishlistQueue() {
+        return QueueBuilder.durable("wishlist.queue").build();
+    }
+
+    @Bean
+    public TopicExchange wishlistExchange() {
+        return new TopicExchange(WISHLIST_EXCHANGE);
+    }
+
+    @Bean
+    public Binding wishlistBinding() {
+        return BindingBuilder
+                .bind(wishlistQueue())
+                .to(wishlistExchange())
+                .with("wishlist.*");
+    }
+
+    // Review Queue Configuration
+    @Bean
+    public Queue reviewQueue() {
+        return QueueBuilder.durable("review.queue").build();
+    }
+
+    @Bean
+    public TopicExchange reviewExchange() {
+        return new TopicExchange(REVIEW_EXCHANGE);
+    }
+
+    @Bean
+    public Binding reviewBinding() {
+        return BindingBuilder
+                .bind(reviewQueue())
+                .to(reviewExchange())
+                .with("review.*");
+    }
+
+    // Cart Queue Configuration
+    @Bean
+    public Queue cartQueue() {
+        return QueueBuilder.durable("cart.queue").build();
+    }
+
+    @Bean
+    public TopicExchange cartExchange() {
+        return new TopicExchange(CART_EXCHANGE);
+    }
+
+    @Bean
+    public Binding cartBinding() {
+        return BindingBuilder
+                .bind(cartQueue())
+                .to(cartExchange())
+                .with("cart.*");
     }
 
     // Dead Letter Queue Configuration

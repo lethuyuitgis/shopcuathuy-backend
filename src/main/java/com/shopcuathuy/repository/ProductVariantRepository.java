@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
  * @version 1.0.0
  */
 @Repository
-public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
+public interface ProductVariantRepository extends JpaRepository<ProductVariant, String> {
 
     /**
      * Find variants by product ID

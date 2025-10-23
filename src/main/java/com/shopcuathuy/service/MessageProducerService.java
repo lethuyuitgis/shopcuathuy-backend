@@ -751,7 +751,7 @@ public class MessageProducerService {
     /**
      * Send cart updated message
      */
-    public void sendCartUpdated(Long userId, Long productId) {
+    public void sendCartUpdated(String userId, String productId) {
         Map<String, Object> message = new HashMap<>();
         message.put("eventType", "CART_UPDATED");
         message.put("userId", userId);
@@ -768,7 +768,7 @@ public class MessageProducerService {
     /**
      * Send cart cleared message
      */
-    public void sendCartCleared(Long userId) {
+    public void sendCartCleared(String userId) {
         Map<String, Object> message = new HashMap<>();
         message.put("eventType", "CART_CLEARED");
         message.put("userId", userId);

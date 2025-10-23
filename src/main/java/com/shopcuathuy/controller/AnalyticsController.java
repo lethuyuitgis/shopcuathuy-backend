@@ -63,7 +63,7 @@ public class AnalyticsController {
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get user's analytics events", description = "Get all analytics events for a user")
     public ResponseEntity<List<AnalyticsEventDTO>> getUserEvents(
-            @Parameter(description = "User ID") @PathVariable Long userId) {
+            @Parameter(description = "User ID") @PathVariable String userId) {
         List<AnalyticsEventDTO> events = analyticsService.getUserEvents(userId);
         return ResponseEntity.ok(events);
     }
@@ -74,7 +74,7 @@ public class AnalyticsController {
     @GetMapping("/user/{userId}/paged")
     @Operation(summary = "Get user's analytics events with pagination", description = "Get paginated analytics events for a user")
     public ResponseEntity<Page<AnalyticsEventDTO>> getUserEvents(
-            @Parameter(description = "User ID") @PathVariable Long userId,
+            @Parameter(description = "User ID") @PathVariable String userId,
             Pageable pageable) {
         Page<AnalyticsEventDTO> events = analyticsService.getUserEvents(userId, pageable);
         return ResponseEntity.ok(events);
@@ -97,7 +97,7 @@ public class AnalyticsController {
     @GetMapping("/product/{productId}")
     @Operation(summary = "Get analytics events by product", description = "Get analytics events for a product")
     public ResponseEntity<List<AnalyticsEventDTO>> getProductEvents(
-            @Parameter(description = "Product ID") @PathVariable Long productId) {
+            @Parameter(description = "Product ID") @PathVariable String productId) {
         List<AnalyticsEventDTO> events = analyticsService.getProductEvents(productId);
         return ResponseEntity.ok(events);
     }

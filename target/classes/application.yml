@@ -154,7 +154,7 @@ logging:
 # Application Configuration
 app:
   jwt:
-    secret: ${JWT_SECRET:mySecretKey}
+    secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
     expiration: ${JWT_EXPIRATION:86400000} # 24 hours
     refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
   
@@ -185,17 +185,12 @@ app:
       client-secret: ${PAYPAL_CLIENT_SECRET:}
       mode: ${PAYPAL_MODE:sandbox}
   
-      minio:
-        endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
-        access-key: ${MINIO_ACCESS_KEY:minioadmin}
-        secret-key: ${MINIO_SECRET_KEY:minioadmin}
-        bucket-name: ${MINIO_BUCKET:shopcuathuy}
-        secure: ${MINIO_SECURE:false}
-      
-      jwt:
-        secret: ${JWT_SECRET:mySecretKey}
-        expiration: ${JWT_EXPIRATION:86400000}
-        refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:minioadmin}
+    secret-key: ${MINIO_SECRET_KEY:minioadmin}
+    bucket-name: ${MINIO_BUCKET:shopcuathuy}
+    secure: ${MINIO_SECURE:false}
   
   elasticsearch:
     host: ${ELASTICSEARCH_HOST:localhost}

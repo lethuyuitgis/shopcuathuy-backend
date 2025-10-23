@@ -52,7 +52,7 @@ public class CartService {
      * Add item to cart
      */
     @Transactional
-    public CartDTO addToCart(Long userId, AddToCartDTO addToCartDTO) {
+    public CartDTO addToCart(String userId, AddToCartDTO addToCartDTO) {
         // Validate user
         User user = userRepository.findById(String.valueOf(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -103,7 +103,7 @@ public class CartService {
         cartItem = cartRepository.save(cartItem);
 
         // Send cart updated message
-        messageProducerService.sendCartUpdated(userId, cartItem.getId());
+        messageProducerService.sendCartUpdated(userId, String.valueOf(cartItem.getId()));
 
         // Store cart data to MinIO
         storeCartToMinIO(cartItem);
@@ -114,7 +114,7 @@ public class CartService {
     /**
      * Get user's cart items
      */
-    public List<CartDTO> getUserCart(Long userId) {
+    public List<CartDTO> getUserCart(String userId) {
         List<Cart> cartItems = cartRepository.findByUserIdAndIsActiveTrue(userId);
         return cartMapper.toDTOList(cartItems);
     }
@@ -123,7 +123,7 @@ public class CartService {
      * Update cart item quantity
      */
     @Transactional
-    public CartDTO updateCartItemQuantity(Long userId, Long cartItemId, Integer quantity) {
+    public CartDTO updateCartItemQuantity(String userId, String cartItemId, Integer quantity) {
         Cart cartItem = cartRepository.findById(cartItemId)
                 .orElseThrow(() -> new RuntimeException("Cart item not found"));
 
@@ -147,7 +147,7 @@ public class CartService {
      * Remove item from cart
      */
     @Transactional
-    public void removeFromCart(Long userId, Long cartItemId) {
+    public void removeFromCart(String userId, String cartItemId) {
         Cart cartItem = cartRepository.findById(cartItemId)
                 .orElseThrow(() -> new RuntimeException("Cart item not found"));
 
@@ -166,7 +166,7 @@ public class CartService {
      * Clear user's cart
      */
     @Transactional
-    public void clearCart(Long userId) {
+    public void clearCart(String userId) {
         cartRepository.deleteByUserIdAndIsActiveTrue(userId);
         
         // Send cart cleared message
@@ -176,7 +176,7 @@ public class CartService {
     /**
      * Get cart summary
      */
-    public CartSummaryDTO getCartSummary(Long userId) {
+    public CartSummaryDTO getCartSummary(String userId) {
         List<Cart> cartItems = cartRepository.findByUserIdAndIsActiveTrue(userId);
         
         int totalItems = cartItems.stream()
@@ -212,7 +212,7 @@ public class CartService {
     /**
      * Export cart data
      */
-    public String exportCartData(Long userId, String format) {
+    public String exportCartData(String userId, String format) {
         List<Cart> cartItems = cartRepository.findByUserIdAndIsActiveTrue(userId);
         
         // Generate export data

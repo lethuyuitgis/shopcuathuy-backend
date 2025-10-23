@@ -17,33 +17,33 @@ import org.springframework.stereotype.Repository;
  * @version 1.0.0
  */
 @Repository
-public interface CartRepository extends JpaRepository<Cart, Long> {
+public interface CartRepository extends JpaRepository<Cart, String> {
 
     /**
      * Find cart items by user ID
      */
-    List<Cart> findByUserIdAndIsActiveTrue(Long userId);
+    List<Cart> findByUserIdAndIsActiveTrue(String userId);
 
     /**
      * Find cart item by user ID and product ID
      */
-    Optional<Cart> findByUserIdAndProductIdAndIsActiveTrue(Long userId, Long productId);
+    Optional<Cart> findByUserIdAndProductIdAndIsActiveTrue(String userId, String productId);
 
     /**
      * Find cart item by user ID, product ID and variant ID
      */
-    Optional<Cart> findByUserIdAndProductIdAndProductVariantIdAndIsActiveTrue(Long userId, Long productId, Long productVariantId);
+    Optional<Cart> findByUserIdAndProductIdAndProductVariantIdAndIsActiveTrue(String userId, String productId, String productVariantId);
 
     /**
      * Count cart items by user ID
      */
-    long countByUserIdAndIsActiveTrue(Long userId);
+    long countByUserIdAndIsActiveTrue(String userId);
 
     /**
      * Find cart items by user ID with pagination
      */
     @Query("SELECT c FROM Cart c WHERE c.user.id = :userId AND c.isActive = true ORDER BY c.createdAt DESC")
-    List<Cart> findActiveCartItemsByUserId(@Param("userId") Long userId);
+    List<Cart> findActiveCartItemsByUserId(@Param("userId") String userId);
 
     /**
      * Calculate total cart value by user ID
@@ -60,15 +60,15 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     /**
      * Delete cart items by user ID
      */
-    void deleteByUserIdAndIsActiveTrue(Long userId);
+    void deleteByUserIdAndIsActiveTrue(String userId);
 
     /**
      * Delete cart item by user ID and product ID
      */
-    void deleteByUserIdAndProductIdAndIsActiveTrue(Long userId, Long productId);
+    void deleteByUserIdAndProductIdAndIsActiveTrue(String userId, String productId);
 
     /**
      * Delete cart item by user ID, product ID and variant ID
      */
-    void deleteByUserIdAndProductIdAndProductVariantIdAndIsActiveTrue(Long userId, Long productId, Long productVariantId);
+    void deleteByUserIdAndProductIdAndProductVariantIdAndIsActiveTrue(String userId, String productId, String productVariantId);
 }

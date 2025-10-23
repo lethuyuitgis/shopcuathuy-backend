@@ -15,7 +15,7 @@ spring:
   # JPA Configuration for Development
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
@@ -50,8 +50,6 @@ spring:
     password: guest
     virtual-host: /
     connection-timeout: 15000
-    queue:
-      name: shopcuathuy.queue
     listener:
       simple:
         acknowledge-mode: auto

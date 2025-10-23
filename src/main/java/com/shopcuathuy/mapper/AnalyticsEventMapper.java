@@ -1,15 +1,14 @@
 package com.shopcuathuy.mapper;
-import org.mapstruct.MappingTarget;
 
 import com.shopcuathuy.dto.AnalyticsEventDTO;
+import com.shopcuathuy.dto.CreateAnalyticsEventDTO;
 import com.shopcuathuy.entity.AnalyticsEvent;
-import java.util.List;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 
 /**
  * Analytics Event Mapper
@@ -19,15 +18,38 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface AnalyticsEventMapper {
-
-    AnalyticsEventMapper INSTANCE = Mappers.getMapper(AnalyticsEventMapper.class);
-
-    @Mapping(target = "userId", source = "user.id")
-    @Mapping(target = "userName", source = "user.name")
-    @Mapping(target = "productId", source = "product.id")
-    @Mapping(target = "productName", source = "product.name")
-    @Mapping(target = "orderId", source = "order.id")
-    AnalyticsEventDTO toDTO(AnalyticsEvent event);
-
-    List<AnalyticsEventDTO> toDTOList(List<AnalyticsEvent> events);
+    
+    /**
+     * Convert AnalyticsEvent to AnalyticsEventDTO
+     */
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "product.id", target = "productId")
+    @Mapping(source = "order.id", target = "orderId")
+    @Mapping(target = "properties", expression = "java(analyticsEvent.getProperties() != null ? analyticsEvent.getProperties().toString() : null)")
+    AnalyticsEventDTO toDTO(AnalyticsEvent analyticsEvent);
+    
+    /**
+     * Convert AnalyticsEventDTO to AnalyticsEvent
+     */
+    AnalyticsEvent toEntity(AnalyticsEventDTO analyticsEventDTO);
+    
+    /**
+     * Convert CreateAnalyticsEventDTO to AnalyticsEvent
+     */
+    @Mapping(target = "properties", ignore = true)
+    AnalyticsEvent toEntity(CreateAnalyticsEventDTO createAnalyticsEventDTO);
+    
+    /**
+     * Update AnalyticsEvent from AnalyticsEventDTO
+     */
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "order", ignore = true)
+    @Mapping(target = "properties", ignore = true)
+    void updateEntity(AnalyticsEventDTO analyticsEventDTO, @MappingTarget AnalyticsEvent analyticsEvent);
+    
+    /**
+     * Convert list of AnalyticsEvent to list of AnalyticsEventDTO
+     */
+    List<AnalyticsEventDTO> toDTOList(List<AnalyticsEvent> analyticsEvents);
 }

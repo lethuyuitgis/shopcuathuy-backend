@@ -49,7 +49,7 @@ public class CartController {
     @PostMapping("/add")
     @Operation(summary = "Add item to cart", description = "Add a product to user's shopping cart")
     public ResponseEntity<CartDTO> addToCart(
-            @Parameter(description = "User ID") @RequestParam Long userId,
+            @Parameter(description = "User ID") @RequestParam String userId,
             @Valid @RequestBody AddToCartDTO addToCartDTO) {
         CartDTO cartItem = cartService.addToCart(userId, addToCartDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(cartItem);
@@ -61,7 +61,7 @@ public class CartController {
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get user's cart", description = "Get all items in user's shopping cart")
     public ResponseEntity<List<CartDTO>> getUserCart(
-            @Parameter(description = "User ID") @PathVariable Long userId) {
+            @Parameter(description = "User ID") @PathVariable String userId) {
         List<CartDTO> cartItems = cartService.getUserCart(userId);
         return ResponseEntity.ok(cartItems);
     }
@@ -72,8 +72,8 @@ public class CartController {
     @PutMapping("/{cartItemId}/quantity")
     @Operation(summary = "Update cart item quantity", description = "Update quantity of a cart item")
     public ResponseEntity<CartDTO> updateCartItemQuantity(
-            @Parameter(description = "User ID") @RequestParam Long userId,
-            @Parameter(description = "Cart item ID") @PathVariable Long cartItemId,
+            @Parameter(description = "User ID") @RequestParam String userId,
+            @Parameter(description = "Cart item ID") @PathVariable String cartItemId,
             @Parameter(description = "New quantity") @RequestParam Integer quantity) {
         CartDTO cartItem = cartService.updateCartItemQuantity(userId, cartItemId, quantity);
         return ResponseEntity.ok(cartItem);
@@ -97,7 +97,7 @@ public class CartController {
     @DeleteMapping("/user/{userId}/clear")
     @Operation(summary = "Clear user's cart", description = "Remove all items from user's cart")
     public ResponseEntity<Void> clearCart(
-            @Parameter(description = "User ID") @PathVariable Long userId) {
+            @Parameter(description = "User ID") @PathVariable String userId) {
         cartService.clearCart(userId);
         return ResponseEntity.noContent().build();
     }

@@ -25,12 +25,12 @@ public interface AnalyticsEventRepository extends JpaRepository<AnalyticsEvent, 
     /**
      * Find events by user ID
      */
-    List<AnalyticsEvent> findByUserIdOrderByCreatedAtDesc(Long userId);
+    List<AnalyticsEvent> findByUser_IdOrderByCreatedAtDesc(String userId);
 
     /**
      * Find events by user ID with pagination
      */
-    Page<AnalyticsEvent> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
+    Page<AnalyticsEvent> findByUser_IdOrderByCreatedAtDesc(String userId, Pageable pageable);
 
     /**
      * Find events by event type
@@ -45,17 +45,17 @@ public interface AnalyticsEventRepository extends JpaRepository<AnalyticsEvent, 
     /**
      * Find events by product ID
      */
-    List<AnalyticsEvent> findByProductIdOrderByCreatedAtDesc(Long productId);
+    List<AnalyticsEvent> findByProduct_IdOrderByCreatedAtDesc(String productId);
 
     /**
      * Find events by product ID with pagination
      */
-    Page<AnalyticsEvent> findByProductIdOrderByCreatedAtDesc(Long productId, Pageable pageable);
+    Page<AnalyticsEvent> findByProduct_IdOrderByCreatedAtDesc(String productId, Pageable pageable);
 
     /**
      * Find events by user ID and event type
      */
-    List<AnalyticsEvent> findByUserIdAndEventTypeOrderByCreatedAtDesc(Long userId, String eventType);
+    List<AnalyticsEvent> findByUser_IdAndEventTypeOrderByCreatedAtDesc(String userId, String eventType);
 
     /**
      * Find events by date range
@@ -80,12 +80,12 @@ public interface AnalyticsEventRepository extends JpaRepository<AnalyticsEvent, 
     /**
      * Count events by user ID
      */
-    long countByUserId(Long userId);
+    long countByUser_Id(String userId);
 
     /**
      * Count events by product ID
      */
-    long countByProductId(Long productId);
+    long countByProduct_Id(String productId);
 
     /**
      * Count events by event type and date range

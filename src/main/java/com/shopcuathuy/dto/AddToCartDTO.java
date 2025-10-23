@@ -16,9 +16,9 @@ import jakarta.validation.constraints.Positive;
 public class AddToCartDTO {
 
     @NotNull
-    private Long productId;
+    private String productId;
 
-    private Long productVariantId;
+    private String productVariantId;
 
     @NotNull
     @Positive
@@ -29,7 +29,7 @@ public class AddToCartDTO {
     // Constructors
     public AddToCartDTO() {}
 
-    public AddToCartDTO(Long productId, Long productVariantId, Integer quantity, String notes) {
+    public AddToCartDTO(String productId, String productVariantId, Integer quantity, String notes) {
         this.productId = productId;
         this.productVariantId = productVariantId;
         this.quantity = quantity;
@@ -37,11 +37,11 @@ public class AddToCartDTO {
     }
 
     // Getters and Setters
-    public Long getProductId() { return productId; }
-    public void setProductId(Long productId) { this.productId = productId; }
+    public String getProductId() { return productId; }
+    public void setProductId(String productId) { this.productId = productId; }
 
-    public Long getProductVariantId() { return productVariantId; }
-    public void setProductVariantId(Long productVariantId) { this.productVariantId = productVariantId; }
+    public String getProductVariantId() { return productVariantId; }
+    public void setProductVariantId(String productVariantId) { this.productVariantId = productVariantId; }
 
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer quantity) { this.quantity = quantity; }

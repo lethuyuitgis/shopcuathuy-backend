@@ -22,13 +22,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret}")
+    @Value("${app.jwt.secret}")
     private String jwtSecret;
 
-    @Value("${jwt.expiration}")
+    @Value("${app.jwt.expiration}")
     private int jwtExpirationInMs;
 
-    @Value("${jwt.refresh-expiration}")
+    @Value("${app.jwt.refresh-expiration}")
     private int jwtRefreshExpirationInMs;
 
     /**
