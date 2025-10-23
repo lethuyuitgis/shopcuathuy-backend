@@ -85,8 +85,8 @@ public class CartController {
     @DeleteMapping("/{cartItemId}")
     @Operation(summary = "Remove item from cart", description = "Remove an item from user's cart")
     public ResponseEntity<Void> removeFromCart(
-            @Parameter(description = "User ID") @RequestParam Long userId,
-            @Parameter(description = "Cart item ID") @PathVariable Long cartItemId) {
+            @Parameter(description = "User ID") @RequestParam String userId,
+            @Parameter(description = "Cart item ID") @PathVariable String cartItemId) {
         cartService.removeFromCart(userId, cartItemId);
         return ResponseEntity.noContent().build();
     }
@@ -108,7 +108,7 @@ public class CartController {
     @GetMapping("/user/{userId}/summary")
     @Operation(summary = "Get cart summary", description = "Get summary of user's cart (total items and value)")
     public ResponseEntity<CartService.CartSummaryDTO> getCartSummary(
-            @Parameter(description = "User ID") @PathVariable Long userId) {
+            @Parameter(description = "User ID") @PathVariable String userId) {
         CartService.CartSummaryDTO summary = cartService.getCartSummary(userId);
         return ResponseEntity.ok(summary);
     }
